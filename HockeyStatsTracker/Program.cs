@@ -1,3 +1,5 @@
+using DB;
+using DB.Utils;
 using HockeyStatsTracker.Components;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,5 +24,12 @@ app.UseStaticFiles();
 
 app.MapRazorComponents<App>()
     .AddServerRenderMode();
+
+using (var context = new DatabaseContext())
+{
+    context.Database.EnsureCreated();
+    var seeder = new DatabaseSeeder(context);
+    seeder.SeedData();
+}
 
 app.Run();
