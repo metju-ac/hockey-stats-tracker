@@ -1,11 +1,10 @@
 namespace DB.Models;
 
-public class Team
+public class League
 {
     public int Id { get; set; }
     public string Name { get; set; }
+    public string Country { get; set; }
 
-    public ICollection<Player> Players { get; set; } = new List<Player>();
-    
     public ICollection<Season> Seasons { get; set; } = new List<Season>();
 }

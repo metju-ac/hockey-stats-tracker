@@ -1,3 +1,5 @@
+using DB.Models.Enums;
+
 namespace DB.Models;
 
 public class Player
@@ -7,8 +9,8 @@ public class Player
     public string Surname { get; set; }
     public DateTime BirthDate { get; set; }
     public PlayerPosition Position { get; set; }
+    public ShotSide ShotSide { get; set; } 
 
     public int TeamId { get; set; } 
     public Team Team { get; set; } 
-
 }

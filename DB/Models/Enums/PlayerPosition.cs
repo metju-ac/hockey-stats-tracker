@@ -1,4 +1,4 @@
-namespace DB.Models;
+namespace DB.Models.Enums;
 
 public enum PlayerPosition
 {
