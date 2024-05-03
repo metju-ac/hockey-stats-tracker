@@ -28,8 +28,7 @@ app.MapRazorComponents<App>()
 using (var context = new DatabaseContext())
 {
     context.Database.EnsureCreated();
-    var seeder = new DatabaseSeeder(context);
-    seeder.SeedData();
+    DatabaseSeeder.ResetDatabase(context);
 }
 
 app.Run();

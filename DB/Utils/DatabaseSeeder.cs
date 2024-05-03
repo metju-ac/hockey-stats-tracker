@@ -1,26 +1,28 @@
 using DB.Models;
+using DB.Models.Enums;
 
 namespace DB.Utils;
 
-public class DatabaseSeeder
+public static class DatabaseSeeder
 {
-    private readonly DatabaseContext _context;
-
-    public DatabaseSeeder(DatabaseContext context)
+    
+    public static void ResetDatabase(DatabaseContext context)
     {
-        _context = context;
+        context.Database.EnsureDeleted();
+        context.Database.EnsureCreated();
+        
+        SeedData(context);
     }
-
-    public void SeedData()
+    public static void SeedData(DatabaseContext context)
     {
-        if (_context.Teams.Any()) return;
+        if (context.Teams.Any()) return;
         
         var teamDynamo = new Team { Name = "HC Dynamo Pardubice" };
         var teamOcelari = new Team { Name = "HC Oceláři Třinec" };
         var teamSparta = new Team { Name = "HC Sparta Praha" };
         var teamLitvinov = new Team { Name = "HC Verva Litvínov" };
 
-        _context.Teams.AddRange(teamDynamo, teamOcelari, teamSparta, teamLitvinov);
+        context.Teams.AddRange(teamDynamo, teamOcelari, teamSparta, teamLitvinov);
         teamDynamo.Players.Add(new Player
             { Name = "Lukáš", Surname = "Sedlák", BirthDate = new DateTime(1990, 1, 1), Position = PlayerPosition.Center });
         teamDynamo.Players.Add(new Player
@@ -49,6 +51,6 @@ public class DatabaseSeeder
         teamLitvinov.Players.Add(new Player
             { Name = "Matej", Surname = "Tomek", BirthDate = new DateTime(1992, 5, 7), Position = PlayerPosition.Goaltender });
         
-        _context.SaveChanges();
+        context.SaveChanges();
     }
 }
