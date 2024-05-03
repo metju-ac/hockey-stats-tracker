@@ -17,6 +17,19 @@ public class DatabaseContext : DbContext
     {
         optionsBuilder.UseSqlite("Data Source=tmp_db.db");
     }
-    
-    // TODO OnModelCreating
+
+    // protected override void OnModelCreating(ModelBuilder modelBuilder)
+    // {
+    //     modelBuilder.Entity<Match>()
+    //         .HasMany(m => m.HomeGoals)
+    //         .WithOne(g => g.Match)
+    //         .HasForeignKey(g => g.MatchId)
+    //         .HasConstraintName("FK_HomeTeamGoals_Match");
+    //
+    //     modelBuilder.Entity<Match>()
+    //         .HasMany(m => m.AwayGoals)
+    //         .WithOne(g => g.Match)
+    //         .HasForeignKey(g => g.MatchId)
+    //         .HasConstraintName("FK_AwayTeamGoals_Match");
+    // }
 }

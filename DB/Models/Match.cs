@@ -18,10 +18,8 @@ public class Match
     public int AwayTeamId { get; set; } 
     public Team AwayTeam { get; set; } 
     
-    public ICollection<Goal> HomeGoals { get; set; }
-    public ICollection<Goal> AwayGoals { get; set; }
+    public ICollection<Goal> Goals { get; set; } = new List<Goal>();
     public MatchResult MatchResult { get; set; } 
     
-    public ICollection<Penalty> HomePenalties { get; set; }
-    public ICollection<Penalty> AwayPenalties { get; set; }
+    public ICollection<Penalty> Penalties { get; set; } = new List<Penalty>();
 }

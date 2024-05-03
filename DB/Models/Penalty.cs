@@ -9,6 +9,7 @@ public class Penalty
 
     public int PlayerId { get; set; }
     public Player Player { get; set; }
+    public bool IsHomeTeamPenalty { get; set; }
 
     public int MatchId { get; set; }
     public Match Match { get; set; }

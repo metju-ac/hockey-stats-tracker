@@ -6,4 +6,6 @@ public class Team
     public string Name { get; set; }
 
     public ICollection<Player> Players { get; set; } = new List<Player>();
+    
+    public ICollection<Season> Seasons { get; set; } = new List<Season>();
 }
