@@ -1,12 +1,18 @@
 using DB;
 using DB.Utils;
 using HockeyStatsTracker.Components;
+using HockeyStatsTracker.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddServerComponents();
+
+builder.Services.AddDbContext<DatabaseContext>();
+builder.Services.AddScoped<MatchesController>();
+
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5026") });
 
 var app = builder.Build();
 
