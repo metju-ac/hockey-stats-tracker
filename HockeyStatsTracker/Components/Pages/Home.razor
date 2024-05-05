@@ -1,7 +1,101 @@
 ﻿@page "/"
 
-<PageTitle>Home</PageTitle>
+@attribute [StreamRendering(true)]
+@attribute [RenderModeServer]
+@using HockeyStatsTracker.Models
+@inject HttpClient Http
 
-<h1>Hello, world!</h1>
+<h1>Standings</h1>
 
-Welcome to your new app.
+<select @oninput="LoadSeasons">
+    <option value="">Select a league</option>
+    @if (leagues != null)
+    {
+        @foreach (var league in leagues)
+        {
+            <option value="@league.Id">@league.Name</option>
+        }
+    }
+</select>
+
+<select @onchange="LoadStandings">
+    <option value="">Select a season</option>
+    @if (seasons != null)
+    {
+        @foreach (var season in seasons)
+        {
+            <option value="@season.Id">@season.Name</option>
+        }
+    }
+</select>
+
+@if (standings != null)
+{
+    <table>
+        <thead>
+        <tr>
+            <th>Team</th>
+            <th>Wins</th>
+            <th>OTW</th>
+            <th>SOW</th>
+            <th>SOL</th>
+            <th>OTL</th>
+            <th>Losses</th>
+            <th>Goals For</th>
+            <th>Goals Against</th>
+            <th>Points</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var standing in standings)
+        {
+            <tr>
+                <td>@standing.TeamName</td>
+                <td>@standing.Wins</td>
+                <td>@standing.OTWins</td>
+                <td>@standing.ShootoutWins</td>
+                <td>@standing.ShootoutLosses</td>
+                <td>@standing.OTLosses</td>
+                <td>@standing.Losses</td>
+                <td>@standing.GoalsFor</td>
+                <td>@standing.GoalsAgainst</td>
+                <td>@standing.Points</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    private IEnumerable<LeagueFE> leagues;
+    private IEnumerable<SeasonFE> seasons;
+    private IEnumerable<TeamStandingFE> standings;
+
+    protected override async Task OnInitializedAsync()
+    {
+        leagues = await Http.GetFromJsonAsync<IEnumerable<LeagueFE>>("api/Leagues");
+    }
+
+    private async Task LoadSeasons(ChangeEventArgs e)
+    {
+        if (e.Value.ToString() == "")
+        {
+            return;
+        }
+
+        var leagueId = int.Parse(e.Value.ToString());
+        seasons = await Http.GetFromJsonAsync<IEnumerable<SeasonFE>>($"api/Seasons/league/{leagueId}");
+    }
+
+    private async Task LoadStandings(ChangeEventArgs e)
+    {
+        if (e.Value.ToString() == "")
+        {
+            return;
+        }
+
+        var seasonId = int.Parse(e.Value.ToString());
+        standings = await Http.GetFromJsonAsync<IEnumerable<TeamStandingFE>>($"api/Standings/season/{seasonId}");
+    }
+
+}
