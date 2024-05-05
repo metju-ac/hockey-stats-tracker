@@ -25,7 +25,23 @@ public class SeasonsController : Controller
         var seasonFEs = seasons.Select(s => new SeasonFE
         {
             Id = s.Id,
-            Year = $"{s.Year - 1}/{s.Year}"
+            Name = $"{s.Year - 1}/{s.Year}"
+        });
+        
+        return Ok(seasonFEs);
+    }
+    
+    [HttpGet("league/{leagueId:int}")]
+    public async Task<ActionResult<IEnumerable<SeasonFE>>> GetSeasonsByLeague(int leagueId)
+    {
+        var seasons = await _context.Seasons
+            .Where(season => season.LeagueId == leagueId)
+            .ToListAsync();
+        
+        var seasonFEs = seasons.Select(s => new SeasonFE
+        {
+            Id = s.Id,
+            Name = $"{s.Year - 1}/{s.Year}"
         });
         
         return Ok(seasonFEs);

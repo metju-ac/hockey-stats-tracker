@@ -45,10 +45,36 @@ public class MatchesController : Controller
             Date = m.Date
         });
 
-        // var matchResults = new List<MatchResultFE>()
-        // {
-        //     new MatchResultFE{Id = 1, HomeTeam = "Team1", AwayTeam = "Team2", HomeGoals = 3, AwayGoals = 2, Suffix = "", Date = DateTime.Now},
-        // };
+        return Ok(matchResults);
+    }
+    
+    [HttpGet("season/{seasonId:int}")]
+    public async Task<ActionResult<IEnumerable<MatchResultFE>>> GetMatchesBySeason(int seasonId)
+    {
+        var matches = await _context.Matches
+            .Include(match => match.HomeTeam)
+            .Include(match => match.AwayTeam)
+            .Include(match => match.Goals)
+            .Where(match => match.SeasonId == seasonId)
+            .ToListAsync();
+
+        var matchResults = matches.Select(m => new MatchResultFE
+        {
+            Id = m.Id,
+            HomeTeam = m.HomeTeam.Name,
+            AwayTeam = m.AwayTeam.Name,
+            HomeGoals = m.Goals.Count(g => g.IsHomeTeamGoal),
+            AwayGoals = m.Goals.Count(g => !g.IsHomeTeamGoal),
+            Suffix = m.MatchResult switch
+            {
+                MatchResult.HomeOTWin => "OT",
+                MatchResult.AwayOTWin => "OT",
+                MatchResult.HomeSOWin => "SO",
+                MatchResult.AwaySOWin => "SO",
+                _ => ""
+            },
+            Date = m.Date
+        });
 
         return Ok(matchResults);
     }
