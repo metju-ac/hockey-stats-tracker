@@ -10,9 +10,12 @@ builder.Services.AddRazorComponents()
     .AddServerComponents();
 
 builder.Services.AddDbContext<DatabaseContext>();
-builder.Services.AddScoped<MatchesController>();
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5026") });
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5000") });
+
+
+// Add the MatchesController
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
@@ -31,10 +34,13 @@ app.UseStaticFiles();
 app.MapRazorComponents<App>()
     .AddServerRenderMode();
 
-using (var context = new DatabaseContext())
-{
-    context.Database.EnsureCreated();
-    DatabaseSeeder.ResetDatabase(context);
-}
+// using (var context = new DatabaseContext())
+// {
+    // context.Database.EnsureCreated();
+    // DatabaseSeeder.ResetDatabase(context);
+// }
+
+
+app.MapControllers();
 
 app.Run();
