@@ -37,7 +37,8 @@ else
 {
     foreach (var match in matches)
     {
-        <p>@match.HomeTeam vs @match.AwayTeam - @match.HomeGoals:@match.AwayGoals @match.Suffix - @match.Date.ToShortDateString()</p>
+        <p>@match.HomeTeam vs @match.AwayTeam - @match.HomeGoals:@match.AwayGoals @match.Suffix - @match.Date.ToShortDateString()
+        <a href="matchdetail/@match.Id">See Detail</a></p>
     }
 }
 

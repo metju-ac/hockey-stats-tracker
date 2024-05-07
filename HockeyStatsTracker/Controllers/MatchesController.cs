@@ -118,48 +118,52 @@ public class MatchesController : Controller
             
             HomeGoals = match.Goals
                 .Where(g => g.IsHomeTeamGoal)
+                .OrderBy(g => g.TimeScored)
                 .Select(g => new GoalFE
                 {
                     Id = g.Id,
-                    TimeScored = g.TimeScored,
+                    TimeScored = Math.Floor(g.TimeScored.TotalMinutes) + ":" + g.TimeScored.Seconds,
                     ScorerId = g.Scorer.Id,
-                    ScorerName = g.Scorer.Name,
+                    ScorerName = g.Scorer.Name + " " + g.Scorer.Surname,
                 })
                 .ToList(),
             
             AwayGoals = match.Goals
                 .Where(g => !g.IsHomeTeamGoal)
+                .OrderBy(g => g.TimeScored)
                 .Select(g => new GoalFE
                 {
                     Id = g.Id,
-                    TimeScored = g.TimeScored,
+                    TimeScored = Math.Floor(g.TimeScored.TotalMinutes) + ":" + g.TimeScored.Seconds,
                     ScorerId = g.Scorer.Id,
-                    ScorerName = g.Scorer.Name,
+                    ScorerName = g.Scorer.Name + " " + g.Scorer.Surname,
                 })
                 .ToList(),
             
             HomePenalties = match.Penalties
                 .Where(p => p.IsHomeTeamPenalty)
+                .OrderBy(p => p.TimeTaken)
                 .Select(p => new PenaltyFE
                 {
                     Id = p.Id,
-                    TimePenalty = p.TimeTaken,
+                    TimePenalty = Math.Floor(p.TimeTaken.TotalMinutes) + ":" + p.TimeTaken.Seconds,
                     PlayerId = p.PlayerId,
-                    PlayerName = p.Player.Name,
-                    PenaltyType = p.PenaltyType.ToString(),
+                    PlayerName = p.Player.Name + " " + p.Player.Surname,
+                    PenaltyType = p.PenaltyType.ToFormattedString(),
                     PenaltyMinutes = PenaltyTypeExtensions.GetPenaltyMinutes(p.PenaltyType)
                 })
                 .ToList(),
             
             AwayPenalties = match.Penalties
                 .Where(p => !p.IsHomeTeamPenalty)
+                .OrderBy(p => p.TimeTaken)
                 .Select(p => new PenaltyFE
                 {
                     Id = p.Id,
-                    TimePenalty = p.TimeTaken,
+                    TimePenalty = Math.Floor(p.TimeTaken.TotalMinutes) + ":" + p.TimeTaken.Seconds,
                     PlayerId = p.PlayerId,
-                    PlayerName = p.Player.Name,
-                    PenaltyType = p.PenaltyType.ToString(),
+                    PlayerName = p.Player.Name + " " + p.Player.Surname,
+                    PenaltyType = p.PenaltyType.ToFormattedString(),
                     PenaltyMinutes = PenaltyTypeExtensions.GetPenaltyMinutes(p.PenaltyType)
                 })
                 .ToList()

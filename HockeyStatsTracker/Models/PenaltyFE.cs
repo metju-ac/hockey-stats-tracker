@@ -3,7 +3,7 @@ namespace HockeyStatsTracker.Models;
 public class PenaltyFE
 {
     public int Id { get; set; }
-    public TimeSpan TimePenalty { get; set; }
+    public string TimePenalty { get; set; }
     public int PlayerId { get; set; }
     public string PlayerName { get; set; }
     public string PenaltyType { get; set; }
