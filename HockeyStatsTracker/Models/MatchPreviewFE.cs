@@ -1,6 +1,6 @@
 namespace HockeyStatsTracker.Models;
 
-public class MatchResultFE
+public class MatchPreviewFE
 {
     public int Id { get; set; }
     public string HomeTeam { get; set; }
