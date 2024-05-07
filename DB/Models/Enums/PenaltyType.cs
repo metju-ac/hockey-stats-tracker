@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+
 namespace DB.Models.Enums;
 
 public enum PenaltyType
@@ -15,6 +17,12 @@ public enum PenaltyType
 
 public static class PenaltyTypeExtensions
 {
+    public static string ToFormattedString(this PenaltyType penaltyType)
+    {
+        var formattedString = Regex.Replace(penaltyType.ToString(), "(?<!^)([A-Z])", " $1");
+        return formattedString.ToLower();
+    }
+    
     public static int GetPenaltyMinutes(PenaltyType penaltyType)
     {
         return penaltyType switch

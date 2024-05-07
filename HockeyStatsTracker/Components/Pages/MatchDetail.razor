@@ -1,0 +1,54 @@
+@page "/matchdetail/{MatchId:int}"
+
+@using HockeyStatsTracker.Models
+@inject HttpClient Http
+
+<h2>Match Details</h2>
+
+@if (matchDetail == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <h3>@matchDetail.HomeTeamName @matchDetail.HomeGoalsCount:@matchDetail.AwayGoalsCount @matchDetail.Suffix @matchDetail.AwayTeamName </h3>
+    <p>Location: @matchDetail.Location</p>
+    <p>Date: @matchDetail.Date.ToShortDateString()</p>
+    
+    <h4>@matchDetail.HomeTeamName goals</h4>
+    foreach (var goal in matchDetail.HomeGoals)
+    {
+        <p>@goal.ScorerName - @goal.TimeScored</p>
+    }
+    
+    <h4>@matchDetail.AwayTeamName goals</h4>
+    foreach (var goal in matchDetail.AwayGoals)
+    {
+        <p>@goal.ScorerName - @goal.TimeScored</p>
+    }
+    
+    <h4>@matchDetail.HomeTeamName penalties</h4>
+    foreach (var penalty in matchDetail.HomePenalties)
+    {
+        <p>@penalty.PlayerName - @penalty.TimePenalty @penalty.PenaltyType @penalty.PenaltyMinutes:00</p>
+    }
+    
+    <h4>@matchDetail.AwayTeamName penalties</h4>
+    foreach (var penalty in matchDetail.AwayPenalties)
+    {
+        <p>@penalty.PlayerName - @penalty.TimePenalty @penalty.PenaltyType @penalty.PenaltyMinutes:00</p>
+    }
+    
+}
+
+@code {
+    [Parameter]
+    public int MatchId { get; set; }
+
+    private MatchFE matchDetail;
+
+    protected override async Task OnInitializedAsync()
+    {
+        matchDetail = await Http.GetFromJsonAsync<MatchFE>($"api/Matches/{MatchId}");
+    }
+}
