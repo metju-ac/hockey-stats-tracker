@@ -44,7 +44,7 @@ else
 @code {
     private IEnumerable<LeagueFE> leagues;
     private IEnumerable<SeasonFE> seasons;
-    private IEnumerable<MatchResultFE> matches;
+    private IEnumerable<MatchPreviewFE> matches;
 
     protected override async Task OnInitializedAsync()
     {
@@ -68,6 +68,6 @@ else
             return;
         }
         var seasonId = int.Parse(e.Value.ToString());
-        matches = await Http.GetFromJsonAsync<IEnumerable<MatchResultFE>>($"api/Matches/season/{seasonId}");
+        matches = await Http.GetFromJsonAsync<IEnumerable<MatchPreviewFE>>($"api/Matches/season/{seasonId}");
     }
 }
