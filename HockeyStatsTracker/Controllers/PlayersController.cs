@@ -38,7 +38,9 @@ public class PlayersController : Controller
             TeamName = matches.First(m => m.HomeTeam.Players.Contains(p) || m.AwayTeam.Players.Contains(p))
                 .HomeTeam.Players.Contains(p) ? matches.First(m => m.HomeTeam.Players.Contains(p)).HomeTeam.Name : matches.First(m => m.AwayTeam.Players.Contains(p)).AwayTeam.Name,
             GamesPlayed = matches.Count(m => m.HomeTeam.Players.Contains(p) || m.AwayTeam.Players.Contains(p)),
-            Goals = matches.Sum(m => m.Goals.Count(g => g.PlayerId == p.Id)),
+            Goals = matches.Sum(m => m.Goals.Count(g => g.ScorerId == p.Id)),
+            Assists = matches.Sum(m => m.Goals.Count(g => g.Assister1Id == p.Id || g.Assister2Id == p.Id)),
+            Points = matches.Sum(m => m.Goals.Count(g => g.ScorerId == p.Id) + m.Goals.Count(g => g.Assister1Id == p.Id || g.Assister2Id == p.Id)),
             PenaltyMinutes = matches.Sum(m =>
                 m.Penalties.Where(penalty => penalty.PlayerId == p.Id).Sum(penalty =>
                     PenaltyTypeExtensions.GetPenaltyMinutes(penalty.PenaltyType))),

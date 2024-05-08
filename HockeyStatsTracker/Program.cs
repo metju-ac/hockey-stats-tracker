@@ -34,11 +34,11 @@ app.UseStaticFiles();
 app.MapRazorComponents<App>()
     .AddServerRenderMode();
 
-// using (var context = new DatabaseContext())
-// {
-    // context.Database.EnsureCreated();
-    // DatabaseSeeder.ResetDatabase(context);
-// }
+using (var context = new DatabaseContext())
+{
+    context.Database.EnsureCreated();
+    DatabaseSeeder.ResetDatabase(context);
+}
 
 
 app.MapControllers();
