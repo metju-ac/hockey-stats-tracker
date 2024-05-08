@@ -14,5 +14,4 @@ public class TeamStandingFE
     public int GoalsFor { get; set; }
     public int GoalsAgainst { get; set; }
     public int Points { get; set; }
-    public int Rank { get; set; }
 }

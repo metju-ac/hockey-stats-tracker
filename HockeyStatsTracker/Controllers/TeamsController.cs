@@ -8,11 +8,11 @@ namespace HockeyStatsTracker.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class StandingsController : Controller
+public class TeamsController : Controller
 {
     private readonly DatabaseContext _context;
 
-    public StandingsController(DatabaseContext context)
+    public TeamsController(DatabaseContext context)
     {
         _context = context;
     }
@@ -33,6 +33,7 @@ public class StandingsController : Controller
         {
             TeamId = t.Id,
             TeamName = t.Name,
+            GamesPlayed = 0,
             Wins = 0,
             Losses = 0,
             OTWins = 0,
@@ -46,6 +47,9 @@ public class StandingsController : Controller
 
         foreach (var match in matches)
         {
+            teamStandings[match.HomeTeamId].GamesPlayed++;
+            teamStandings[match.AwayTeamId].GamesPlayed++;
+            
             var homeGoals = match.Goals.Count(g => g.IsHomeTeamGoal);
             var awayGoals = match.Goals.Count(g => !g.IsHomeTeamGoal);
 
