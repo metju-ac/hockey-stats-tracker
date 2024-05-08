@@ -37,8 +37,10 @@ public static class DatabaseSeeder
         
         for (int i = 0; i < teams.Count; i++)
         {
-            for (int j = i + 1; j < teams.Count; j++)
+            for (int j = 0; j < teams.Count; j++)
             {
+                if (i == j) continue;
+                
                 Team homeTeam = teams[i];
                 Team awayTeam = teams[j];
                 
@@ -71,20 +73,70 @@ public static class DatabaseSeeder
                     MatchResult = result
                 };
 
-                var homePlayers = homeTeam.Players.ToList();
+                var homePlayers = homeTeam.Players.Where(p => p.Position != PlayerPosition.Goaltender).ToList();
                 for (int k = 0; k < homeGoals; k++)
                 {
                     var scorer = homePlayers[random.Next(0, homePlayers.Count)];
                     var time = TimeSpan.FromSeconds(random.Next(0, 3600));
-                    match.Goals.Add(new Goal { TimeScored = time, Scorer = scorer, IsHomeTeamGoal = true, Match = match });
+                    var goal = new Goal { TimeScored = time, Scorer = scorer, IsHomeTeamGoal = true, Match = match };
+
+                    var assistersCount = random.Next(0, 3);
+
+                    if (assistersCount > 0)
+                    {
+                        Player potentialAssister;
+                        do
+                        {
+                            potentialAssister = homePlayers[random.Next(0, homePlayers.Count)];
+                        } while (potentialAssister == scorer);
+
+                        goal.Assister1 = potentialAssister;
+
+                        if (assistersCount > 1)
+                        {
+                            do
+                            {
+                                potentialAssister = homePlayers[random.Next(0, homePlayers.Count)];
+                            } while (potentialAssister == scorer || potentialAssister == goal.Assister1);
+
+                            goal.Assister2 = potentialAssister;
+                        }
+                    }   
+                    match.Goals.Add(goal);
                 }
 
-                var awayPlayers = awayTeam.Players.ToList();
+                var awayPlayers = awayTeam.Players.Where(p => p.Position != PlayerPosition.Goaltender).ToList();
                 for (int k = 0; k < awayGoals; k++)
                 {
                     var scorer = awayPlayers[random.Next(0, awayPlayers.Count)];
                     var time = TimeSpan.FromSeconds(random.Next(0, 3600));
-                    match.Goals.Add(new Goal { TimeScored = time, Scorer = scorer, IsHomeTeamGoal = false, Match = match });
+
+                    var goal = new Goal { TimeScored = time, Scorer = scorer, IsHomeTeamGoal = false, Match = match };
+
+                    var assistersCount = random.Next(0, 3);
+
+                    if (assistersCount > 0)
+                    {
+                        Player potentialAssister;
+                        do
+                        {
+                            potentialAssister = awayPlayers[random.Next(0, awayPlayers.Count)];
+                        } while (potentialAssister == scorer);
+
+                        goal.Assister1 = potentialAssister;
+
+                        if (assistersCount > 1)
+                        {
+                            do
+                            {
+                                potentialAssister = awayPlayers[random.Next(0, awayPlayers.Count)];
+                            } while (potentialAssister == scorer || potentialAssister == goal.Assister1);
+
+                            goal.Assister2 = potentialAssister;
+                        }
+                    }
+
+                    match.Goals.Add(goal);
                 }
 
                 int homePenalties = random.Next(0, 10);
