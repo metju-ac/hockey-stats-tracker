@@ -46,6 +46,6 @@ public class PlayersController : Controller
                     PenaltyTypeExtensions.GetPenaltyMinutes(penalty.PenaltyType))),
         });
 
-        return Ok(playerStandings);
+        return Ok(playerStandings.OrderByDescending(p => p.Points).ThenByDescending(p => p.Goals));
     }
 }

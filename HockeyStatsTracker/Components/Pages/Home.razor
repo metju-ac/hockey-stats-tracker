@@ -3,6 +3,7 @@
 @attribute [StreamRendering(true)]
 @attribute [RenderModeServer]
 @using HockeyStatsTracker.Models
+@using Microsoft.AspNetCore.Components.QuickGrid
 @inject HttpClient Http
 
 <h1>Standings</h1>
@@ -31,41 +32,19 @@
 
 @if (standings != null)
 {
-    <table>
-        <thead>
-        <tr>
-            <th>Team</th>
-            <th>Wins</th>
-            <th>OTW</th>
-            <th>SOW</th>
-            <th>SOL</th>
-            <th>OTL</th>
-            <th>Losses</th>
-            <th>Goals For</th>
-            <th>Goals Against</th>
-            <th>Points</th>
-            <th>Games played</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var standing in standings)
-        {
-            <tr>
-                <td>@standing.TeamName</td>
-                <td>@standing.Wins</td>
-                <td>@standing.OTWins</td>
-                <td>@standing.ShootoutWins</td>
-                <td>@standing.ShootoutLosses</td>
-                <td>@standing.OTLosses</td>
-                <td>@standing.Losses</td>
-                <td>@standing.GoalsFor</td>
-                <td>@standing.GoalsAgainst</td>
-                <td>@standing.Points</td>
-                <td>@standing.GamesPlayed</td>
-            </tr>
-        }
-        </tbody>
-    </table>
+    <QuickGrid Items="standings.AsQueryable()">
+        <PropertyColumn Property="t => t.TeamName" Title="Team name"></PropertyColumn>
+        <PropertyColumn Property="t => t.Wins" Title="W" Sortable="true"></PropertyColumn>
+        <PropertyColumn Property="t => t.OTWins" Title="OTW"Sortable="true"></PropertyColumn>
+        <PropertyColumn Property="t => t.ShootoutWins" Title="SOW" Sortable="true"></PropertyColumn>
+        <PropertyColumn Property="t => t.ShootoutLosses" Title="SOL" Sortable="true"></PropertyColumn>
+        <PropertyColumn Property="t => t.OTLosses" Title="OTL" Sortable="true"></PropertyColumn>
+        <PropertyColumn Property="t => t.Losses" Title="L" Sortable="true"></PropertyColumn>
+        <PropertyColumn Property="t => t.GoalsFor" Title="GF" Sortable="true"></PropertyColumn>
+        <PropertyColumn Property="t => t.GoalsAgainst" Title="GA" Sortable="true"></PropertyColumn>
+        <PropertyColumn Property="t => t.Points" Title="Pts" Sortable="true"></PropertyColumn>
+        <PropertyColumn Property="t => t.GamesPlayed" Title="GP" Sortable="true"></PropertyColumn>
+    </QuickGrid>
 }
 
 @code {

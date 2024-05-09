@@ -1,8 +1,9 @@
-﻿@page "/weather"
+﻿@page "/players"
 
 @attribute [StreamRendering(true)]
 @attribute [RenderModeServer]
 @using HockeyStatsTracker.Models
+@using Microsoft.AspNetCore.Components.QuickGrid
 @inject HttpClient Http
 
 <PageTitle>Weather</PageTitle>
@@ -33,36 +34,22 @@
 
 @if (standings != null)
 {
-    <table>
-        <thead>
-            <tr>
-                <th>Player</th>
-                <th>Team</th>
-                <th>Goals</th>
-                <th>Assists</th>
-                <th>Points</th>
-                <th>Penalty minutes</th>
-                <th>Game played</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var standing in standings)
-            {
-                <tr>
-                    <td>@standing.PlayerName</td>
-                    <td>@standing.TeamName</td>
-                    <td>@standing.Goals</td>
-                    <td>@standing.Assists</td>
-                    <td>@standing.Points</td>
-                    <td>@standing.PenaltyMinutes</td>
-                    <td>@standing.GamesPlayed</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <QuickGrid Items="standings.AsQueryable()" Pagination="pagiantion">
+        <PropertyColumn Property="p => p.PlayerName" Title="Player"></PropertyColumn>
+        <PropertyColumn Property="p => p.TeamName" Title="Team"></PropertyColumn>
+        <PropertyColumn Property="p => p.Goals" Title="G" Sortable="true"></PropertyColumn>
+        <PropertyColumn Property="p => p.Assists" Title="A" Sortable="true"></PropertyColumn>
+        <PropertyColumn Property="p => p.Points" Title="P" Sortable="true"></PropertyColumn>
+        <PropertyColumn Property="p => p.PenaltyMinutes" Title="PIM" Sortable="true"></PropertyColumn>
+        <PropertyColumn Property="p => p.GamesPlayed" Title="GP" Sortable="true"></PropertyColumn>
+    </QuickGrid>
 }
 
+<Paginator State="@pagiantion"></Paginator>
+
 @code {
+    PaginationState pagiantion = new PaginationState { ItemsPerPage = 20 };
+    
     private IEnumerable<LeagueFE> leagues;
     private IEnumerable<SeasonFE> seasons;
     private IEnumerable<PlayerStandingFE> standings;

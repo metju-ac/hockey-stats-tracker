@@ -100,6 +100,6 @@ public class TeamsController : Controller
             }
         }
 
-        return Ok(teamStandings.Values);
+        return Ok(teamStandings.Values.OrderByDescending(t => t.Points));
     }
 }
