@@ -1,10 +1,14 @@
 @page "/login"
+@attribute [AllowAnonymous]
 @using System.ComponentModel.DataAnnotations
 @using System.Security.Cryptography
 @using System.Text
 @using DB.Models
-@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Services
 @inject HttpClient Http
+@inject CustomAuthenticationStateProvider _authenticationStateProvider
 
 <EditForm Model="@_loginModel" OnValidSubmit="HandleValidSubmit" FormName="LoginForm">
     <DataAnnotationsValidator/>
@@ -37,7 +41,7 @@
         if (response.IsSuccessStatusCode)
         {
             Console.WriteLine("Login successful");
-            // Handle successful login, e.g. redirect to admin page
+            _authenticationStateProvider.FakedAdminSignIn();
         }
         else
         {
