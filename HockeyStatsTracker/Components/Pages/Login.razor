@@ -1,37 +1,51 @@
 @page "/login"
 @using System.ComponentModel.DataAnnotations
+@using System.Security.Cryptography
+@using System.Text
 @using DB.Models
 @using Microsoft.AspNetCore.Components.Forms
 @inject HttpClient Http
 
 <EditForm Model="@_loginModel" OnValidSubmit="HandleValidSubmit" FormName="LoginForm">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
 
-    @* <InputText id="username" @bind-Value="loginModel.Username" placeholder="Username" /> *@
-    <InputText id="username" @bind-Value="_loginModel.Username" />
-    <InputText id="password" @bind-Value="_loginModel.Password" type="password" placeholder="Password" />
+    <InputText id="username" @bind-Value="_loginModel.Username" placeholder="Username"/>
+    <InputText id="password" @bind-Value="_loginModel.Password" type="password" placeholder="Password"/>
 
     <button type="submit">Log in</button>
+
+    @if (showLoginError)
+    {
+        <div class="alert alert-danger" role="alert">Invalid username or password.</div>
+    }
 </EditForm>
 
 @code {
-    private LoginModel _loginModel = new LoginModel();
+    [SupplyParameterFromForm] private LoginModel? _loginModel { get; set; }
+    private bool showLoginError = false;
 
     private async Task HandleValidSubmit()
     {
         Console.WriteLine("Submitting login form");
         Console.WriteLine(_loginModel.Username);
-        Console.WriteLine(_loginModel.Password);
-        // var response = await Http.PostAsJsonAsync("api/Auth/Login", _loginModel);
 
-        // if (response.IsSuccessStatusCode)
-        // {
+        Console.WriteLine(_loginModel.Password);
+
+        var response = await Http.PostAsJsonAsync("api/Auth/Login", _loginModel);
+
+        if (response.IsSuccessStatusCode)
+        {
+            Console.WriteLine("Login successful");
             // Handle successful login, e.g. redirect to admin page
-        // }
-        // else
-        // {
-        //     // Handle failed login, e.g. show error message
-        // }
+        }
+        else
+        {
+            Console.WriteLine("Login failed");
+            showLoginError = true;
+            _loginModel = new LoginModel();
+        }
     }
+
+    protected override void OnInitialized() => _loginModel ??= new();
 }
