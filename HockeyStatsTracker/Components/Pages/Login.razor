@@ -1,5 +1,6 @@
 @page "/login"
 @attribute [AllowAnonymous]
+
 @using System.ComponentModel.DataAnnotations
 @using System.Security.Cryptography
 @using System.Text
@@ -41,7 +42,7 @@
         if (response.IsSuccessStatusCode)
         {
             Console.WriteLine("Login successful");
-            _authenticationStateProvider.FakedAdminSignIn();
+            await _authenticationStateProvider.SignIn();
         }
         else
         {

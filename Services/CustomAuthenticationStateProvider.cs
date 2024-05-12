@@ -15,7 +15,7 @@ public class CustomAuthenticationStateProvider : AuthenticationStateProvider {
                 new Claim(ClaimTypes.Name, "john"),
                 new Claim(ClaimTypes.Role, "user"),
             };
-            var identity = new ClaimsIdentity(claims, "faked");
+            var identity = new ClaimsIdentity(claims, "Cookies");
             return new ClaimsPrincipal(identity);
         }
     }
@@ -25,8 +25,10 @@ public class CustomAuthenticationStateProvider : AuthenticationStateProvider {
                 new Claim(ClaimTypes.Name, "john"),
                 new Claim(ClaimTypes.Role, "admin"),
             };
-            var identity = new ClaimsIdentity(claims, "faked");
-            return new ClaimsPrincipal(identity);
+            var identity = new ClaimsIdentity(claims, "Cookies");
+            var user =  new ClaimsPrincipal(identity);
+            NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(user)));
+            return user;
         }
     }
     public void FakedSignIn() {
@@ -40,5 +42,22 @@ public class CustomAuthenticationStateProvider : AuthenticationStateProvider {
     public void FakedSignOut() {
         var result = Task.FromResult(new AuthenticationState(AnonymousUser));
         NotifyAuthenticationStateChanged(result);
+    }
+    
+    public async Task SignIn()
+    {
+        var claims = new[] 
+        {
+            new Claim(ClaimTypes.Name, "admin"),
+            new Claim(ClaimTypes.Role, "admin")
+        };
+        var identity = new ClaimsIdentity(claims, "Cookies");
+        var user = new ClaimsPrincipal(identity);
+
+        // Notify the system that the user's sign-in state has changed
+        NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(user)));
+
+        // Validate the username and password
+        // This is just a simple example, you should replace this with your own validation logic
     }
 }

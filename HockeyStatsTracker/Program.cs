@@ -17,7 +17,14 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://
 
 builder.Services.AddScoped<CustomAuthenticationStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider>(provider => provider.GetRequiredService<CustomAuthenticationStateProvider>());
-builder.Services.AddAuthorizationCore();
+// builder.Services.AddAuthorizationCore();
+
+builder.Services.AddAuthentication("Cookies")
+    .AddCookie("Cookies", options =>
+    {
+        options.AccessDeniedPath = "/auth/access-denied";
+        options.LoginPath = "/login";
+    });
 
 builder.Services.AddControllers();
 
@@ -32,16 +39,16 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
-app.UseAntiforgery();
+// app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
     .AddServerRenderMode();
 
-using (var context = new DatabaseContext())
-{
-    context.Database.EnsureCreated();
-    DatabaseSeeder.ResetDatabase(context);
-}
+// using (var context = new DatabaseContext())
+// {
+    // context.Database.EnsureCreated();
+    // DatabaseSeeder.ResetDatabase(context);
+// }
 
 
 app.MapControllers();

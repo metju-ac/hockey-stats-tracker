@@ -1,12 +1,13 @@
 ﻿@page "/players"
-@attribute [Authorize]
-
 @attribute [StreamRendering(true)]
 @attribute [RenderModeServer]
 @using HockeyStatsTracker.Models
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.QuickGrid
+@using Services
 @inject HttpClient Http
+@inject CustomAuthenticationStateProvider _authenticationStateProvider
 
 <PageTitle>Weather</PageTitle>
 

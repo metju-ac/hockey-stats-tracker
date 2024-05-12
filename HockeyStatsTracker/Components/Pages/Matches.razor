@@ -1,4 +1,5 @@
 ﻿@page "/matches"
+@attribute [Authorize(Roles = "admin")]
 
 @attribute [StreamRendering(true)]
 @attribute [RenderModeServer]
