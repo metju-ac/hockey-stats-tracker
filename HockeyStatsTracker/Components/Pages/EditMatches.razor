@@ -38,7 +38,7 @@ else
     foreach (var match in matches)
     {
         <p>@match.HomeTeam vs @match.AwayTeam - @match.HomeGoals:@match.AwayGoals @match.Suffix - @match.Date.ToShortDateString()
-            <a href="matchdetail/@match.Id">See Detail</a>
+            <a href="edit/match/@match.Id">Edit match</a>
             <button @onclick="(() => DeleteMatch(match.Id))">Delete</button>
         </p>
     }
@@ -75,6 +75,7 @@ else
         matches = await Http.GetFromJsonAsync<IEnumerable<MatchPreviewFE>>($"api/Matches/season/{selectedSeasonId}");
     }
 
+//    TODO implement or remove
 //    private async Task ConfirmDelete(int matchId)
 //    {
 //        if (confirm("Are you sure you want to delete this match?"))

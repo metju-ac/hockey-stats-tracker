@@ -1,4 +1,4 @@
-@page "/matchdetail/{MatchId:int}"
+@page "/edit/match/{MatchId:int}"
 
 @using HockeyStatsTracker.Models
 @inject HttpClient Http
@@ -27,8 +27,9 @@ else
             {
                 <text> (@goal.Assister1Name)</text>
             }
-            - @goal.TimeScored </p>
+            - @goal.TimeScored <button @onclick="(() => DeleteGoal(goal))">Delete</button></p>    
     }
+    <button @onclick="(() => AddGoal())">Add Goal</button>
     
     <h4>@matchDetail.AwayTeamName goals</h4>
     foreach (var goal in matchDetail.AwayGoals)
@@ -42,8 +43,7 @@ else
             {
                 <text> (@goal.Assister1Name)</text>
             }
-            - @goal.TimeScored </p>
-    }
+            - @goal.TimeScored <button @onclick="(() => DeleteGoal(goal))">Delete</button></p>    }
     
     <h4>@matchDetail.HomeTeamName penalties</h4>
     foreach (var penalty in matchDetail.HomePenalties)
@@ -68,5 +68,16 @@ else
     protected override async Task OnInitializedAsync()
     {
         matchDetail = await Http.GetFromJsonAsync<MatchFE>($"api/Matches/{MatchId}");
+    }
+    
+    private async Task DeleteGoal(GoalFE goal)
+    {
+        Console.WriteLine($"Deleting goal {goal.Id}");
+        throw new NotImplementedException();
+    }
+
+    private async Task AddGoal()
+    {
+        Console.WriteLine("Adding goal");
     }
 }

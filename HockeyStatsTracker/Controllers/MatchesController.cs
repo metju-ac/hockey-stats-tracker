@@ -122,9 +122,12 @@ public class MatchesController : Controller
                 .Select(g => new GoalFE
                 {
                     Id = g.Id,
-                    TimeScored = Math.Floor(g.TimeScored.TotalMinutes) + ":" + g.TimeScored.Seconds,
-                    ScorerId = g.Scorer.Id,
+                    TimeScored = ((int)g.TimeScored.TotalMinutes).ToString("D2") + ":" + g.TimeScored.Seconds.ToString("D2"),
                     ScorerName = g.Scorer.Name + " " + g.Scorer.Surname,
+                    Assister1Id = g.Assister1Id,
+                    Assister1Name = g.Assister1 != null ? g.Assister1.Name + " " + g.Assister1.Surname : null,
+                    Assister2Id = g.Assister2Id,
+                    Assister2Name = g.Assister2 != null ? g.Assister2.Name + " " + g.Assister2.Surname : null,
                 })
                 .ToList(),
             
@@ -134,9 +137,12 @@ public class MatchesController : Controller
                 .Select(g => new GoalFE
                 {
                     Id = g.Id,
-                    TimeScored = Math.Floor(g.TimeScored.TotalMinutes) + ":" + g.TimeScored.Seconds,
-                    ScorerId = g.Scorer.Id,
+                    TimeScored = ((int)g.TimeScored.TotalMinutes).ToString("D2") + ":" + g.TimeScored.Seconds.ToString("D2"),
                     ScorerName = g.Scorer.Name + " " + g.Scorer.Surname,
+                    Assister1Id = g.Assister1Id,
+                    Assister1Name = g.Assister1 != null ? g.Assister1.Name + " " + g.Assister1.Surname : null,
+                    Assister2Id = g.Assister2Id,
+                    Assister2Name = g.Assister2 != null ? g.Assister2.Name + " " + g.Assister2.Surname : null,
                 })
                 .ToList(),
             
@@ -146,8 +152,7 @@ public class MatchesController : Controller
                 .Select(p => new PenaltyFE
                 {
                     Id = p.Id,
-                    TimePenalty = Math.Floor(p.TimeTaken.TotalMinutes) + ":" + p.TimeTaken.Seconds,
-                    PlayerId = p.PlayerId,
+                    TimePenalty = ((int)p.TimeTaken.TotalMinutes).ToString("D2") + ":" + p.TimeTaken.Seconds.ToString("D2"),
                     PlayerName = p.Player.Name + " " + p.Player.Surname,
                     PenaltyType = p.PenaltyType.ToFormattedString(),
                     PenaltyMinutes = PenaltyTypeExtensions.GetPenaltyMinutes(p.PenaltyType)
@@ -160,8 +165,7 @@ public class MatchesController : Controller
                 .Select(p => new PenaltyFE
                 {
                     Id = p.Id,
-                    TimePenalty = Math.Floor(p.TimeTaken.TotalMinutes) + ":" + p.TimeTaken.Seconds,
-                    PlayerId = p.PlayerId,
+                    TimePenalty = ((int)p.TimeTaken.TotalMinutes).ToString("D2") + ":" + p.TimeTaken.Seconds.ToString("D2"),
                     PlayerName = p.Player.Name + " " + p.Player.Surname,
                     PenaltyType = p.PenaltyType.ToFormattedString(),
                     PenaltyMinutes = PenaltyTypeExtensions.GetPenaltyMinutes(p.PenaltyType)
