@@ -1,5 +1,7 @@
 @page "/edit/match/{MatchId:int}"
 
+@attribute [StreamRendering(true)]
+@attribute [RenderModeServer]
 @using HockeyStatsTracker.Models
 @inject HttpClient Http
 
@@ -27,7 +29,8 @@ else
             {
                 <text> (@goal.Assister1Name)</text>
             }
-            - @goal.TimeScored <button @onclick="(() => DeleteGoal(goal))">Delete</button></p>    
+            - @goal.TimeScored <button @onclick="(() => DeleteGoal(goal.Id))">Delete</button>  
+            </p>    
     }
     <button @onclick="(() => AddGoal())">Add Goal</button>
     
@@ -43,7 +46,7 @@ else
             {
                 <text> (@goal.Assister1Name)</text>
             }
-            - @goal.TimeScored <button @onclick="(() => DeleteGoal(goal))">Delete</button></p>    }
+            - @goal.TimeScored <button @onclick="(() => DeleteGoal(goal.Id))">Delete</button></p>    }
     
     <h4>@matchDetail.HomeTeamName penalties</h4>
     foreach (var penalty in matchDetail.HomePenalties)
@@ -70,10 +73,10 @@ else
         matchDetail = await Http.GetFromJsonAsync<MatchFE>($"api/Matches/{MatchId}");
     }
     
-    private async Task DeleteGoal(GoalFE goal)
+    private async Task DeleteGoal(int goalId)
     {
-        Console.WriteLine($"Deleting goal {goal.Id}");
-        throw new NotImplementedException();
+        await Http.DeleteAsync($"api/Goals/{goalId}");
+        matchDetail = await Http.GetFromJsonAsync<MatchFE>($"api/Matches/{MatchId}");
     }
 
     private async Task AddGoal()

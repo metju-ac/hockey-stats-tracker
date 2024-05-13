@@ -12,6 +12,7 @@ public class DatabaseContext : DbContext
     public DbSet<Player> Players { get; set; }
     public DbSet<League> Leagues { get; set; }
     public DbSet<Season> Seasons { get; set; }
+    public DbSet<Goal> Goals { get; set; }
     
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
