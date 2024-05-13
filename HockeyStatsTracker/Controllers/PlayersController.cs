@@ -48,4 +48,25 @@ public class PlayersController : Controller
 
         return Ok(playerStandings.OrderByDescending(p => p.Points).ThenByDescending(p => p.Goals));
     }
+    
+    [HttpGet("team/{teamId:int}")]
+    public async Task<ActionResult<IEnumerable<PlayerFE>>> GetStandingsByTeam(int teamId)
+    {
+        var team = await _context.Teams
+            .Include(t => t.Players)
+            .FirstOrDefaultAsync(t => t.Id == teamId);
+
+        if (team == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(team.Players.Select(p => new PlayerFE
+        {
+            Id = p.Id,
+            Name = p.Name + " " + p.Surname
+        }));
+    }
+    
+    
 }
