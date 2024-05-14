@@ -76,7 +76,7 @@
         }
 
         var seasonId = int.Parse(e.Value.ToString());
-        standings = await Http.GetFromJsonAsync<IEnumerable<TeamStandingFE>>($"api/Teams/season/{seasonId}");
+        standings = await Http.GetFromJsonAsync<IEnumerable<TeamStandingFE>>($"api/Teams/standings/season/{seasonId}");
     }
 
 }

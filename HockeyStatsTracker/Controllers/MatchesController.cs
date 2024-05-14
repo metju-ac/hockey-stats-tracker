@@ -196,4 +196,36 @@ public class MatchesController : Controller
 
         return Ok();
     }
+    
+    [HttpPost]
+    public async Task<ActionResult<MatchFE>> CreateMatch(MatchFE matchFE)
+    {
+        if (matchFE.HomeTeamId == matchFE.AwayTeamId)
+        {
+            return BadRequest("Home team and away team cannot be the same");
+        }
+        
+        if (matchFE.SeasonId == null)
+        {
+            return BadRequest("SeasonId is required");
+        }
+        
+        var match = new Match
+        {
+            SeasonId = (int)matchFE.SeasonId!,
+            Date = matchFE.Date,
+            Location = matchFE.Location,
+            HomeTeamId = matchFE.HomeTeamId,
+            AwayTeamId = matchFE.AwayTeamId,
+            MatchResult = matchFE.MatchResult
+        };
+
+        _context.Matches.Add(match);
+        await _context.SaveChangesAsync();
+
+        Console.WriteLine(match.Id);
+        return await GetMatchById(match.Id);
+        return Ok();
+        // return CreatedAtAction(nameof(GetMatchById), new { id = match.Id }, matchFE);
+    }
 }

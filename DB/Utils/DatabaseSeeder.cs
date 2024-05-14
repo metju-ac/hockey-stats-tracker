@@ -67,7 +67,6 @@ public static class DatabaseSeeder
                     HomeTeam = homeTeam,
                     AwayTeam = awayTeam,
                     Date = DateTime.Now,
-                    Time = TimeSpan.FromHours(random.Next(0, 24)),
                     Location = "Random location",
                     Season = season,
                     MatchResult = result

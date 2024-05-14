@@ -6,7 +6,6 @@ public class Match
 {
     public int Id { get; set; } 
     public DateTime Date { get; set; }
-    public TimeSpan Time { get; set; }
     public string Location { get; set; }
     
     public int SeasonId { get; set; }

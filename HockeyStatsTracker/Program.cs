@@ -16,7 +16,8 @@ builder.Services.AddDbContext<DatabaseContext>();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5000") });
 
 builder.Services.AddScoped<CustomAuthenticationStateProvider>();
-builder.Services.AddScoped<AuthenticationStateProvider>(provider => provider.GetRequiredService<CustomAuthenticationStateProvider>());
+builder.Services.AddScoped<AuthenticationStateProvider>(provider =>
+    provider.GetRequiredService<CustomAuthenticationStateProvider>());
 builder.Services.AddAuthorizationCore();
 
 builder.Services.AddControllers();

@@ -17,7 +17,7 @@ public class TeamsController : Controller
         _context = context;
     }
 
-    [HttpGet("season/{seasonId:int}")]
+    [HttpGet("standings/season/{seasonId:int}")]
     public async Task<ActionResult<IEnumerable<TeamStandingFE>>> GetStandingsBySeason(int seasonId)
     {
         var matches = await _context.Matches
@@ -101,5 +101,25 @@ public class TeamsController : Controller
         }
 
         return Ok(teamStandings.Values.OrderByDescending(t => t.Points));
+    }
+    
+    [HttpGet("season/{seasonId:int}")]
+    public async Task<ActionResult<IEnumerable<TeamFE>>> GetTeamsBySeason(int seasonId)
+    {
+        var matches = await _context.Matches
+            .Include(match => match.HomeTeam)
+            .Include(match => match.AwayTeam)
+            .Where(match => match.SeasonId == seasonId)
+            .ToListAsync();
+
+        var teams = matches.SelectMany(m => new[] { m.HomeTeam, m.AwayTeam }).Distinct();
+
+        var teamFEs = teams.Select(t => new TeamFE
+        {
+            Id = t.Id,
+            Name = t.Name
+        });
+
+        return Ok(teamFEs);
     }
 }

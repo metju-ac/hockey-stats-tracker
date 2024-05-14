@@ -1,0 +1,86 @@
+@page "/add/match/{SeasonId:int}"
+
+@attribute [StreamRendering(true)]
+@attribute [RenderModeServer]
+@using DB.Models.Enums
+@using HockeyStatsTracker.Models
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h2>Create Match</h2>
+
+@if (teams == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div>
+        <label for="homeTeam">Home Team:</label>
+        <select id="homeTeam" @bind="newMatch.HomeTeamId">
+            @foreach (var team in teams)
+            {
+                <option value="@team.Id">@team.Name</option>
+            }
+        </select>
+    </div>
+
+    <div>
+        <label for="awayTeam">Away Team:</label>
+        <select id="awayTeam" @bind="newMatch.AwayTeamId">
+            @foreach (var team in teams)
+            {
+                <option value="@team.Id">@team.Name</option>
+            }
+        </select>
+    </div>
+
+    <div>
+        <label for="date">Date:</label>
+        <input id="date" type="date" @bind="newMatch.Date" />
+    </div>
+
+    <div>
+        <label for="location">Location:</label>
+        <input id="location" type="text" @bind="newMatch.Location" />
+    </div>
+
+<div>
+    <label for="matchResult">Match Result:</label>
+    <select id="matchResult" @bind="newMatch.MatchResult">
+        @foreach (MatchResult matchResult in Enum.GetValues(typeof(MatchResult)))
+        {
+        <option value="@matchResult">@matchResult</option>
+        }
+    </select>
+</div>
+
+    <button @onclick="CreateMatch">Create Match</button>
+}
+
+@code {
+    [Parameter] public int SeasonId { get; set; }
+
+    private IEnumerable<TeamFE> teams;
+    private MatchFE newMatch = new MatchFE
+    {
+        Date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day),
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        teams = await Http.GetFromJsonAsync<IEnumerable<TeamFE>>($"api/Teams/season/{SeasonId}");
+    }
+
+    private async Task CreateMatch()
+    {
+        newMatch.SeasonId = SeasonId;
+        
+        var response = await Http.PostAsJsonAsync("api/Matches", newMatch);
+        if (response.IsSuccessStatusCode)
+        {
+            var createdMatch = await response.Content.ReadFromJsonAsync<MatchFE>();
+            NavigationManager.NavigateTo($"/edit/match/{createdMatch.Id}");
+        }
+    }
+}
