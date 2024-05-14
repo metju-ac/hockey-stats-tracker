@@ -225,7 +225,5 @@ public class MatchesController : Controller
 
         Console.WriteLine(match.Id);
         return await GetMatchById(match.Id);
-        return Ok();
-        // return CreatedAtAction(nameof(GetMatchById), new { id = match.Id }, matchFE);
     }
 }

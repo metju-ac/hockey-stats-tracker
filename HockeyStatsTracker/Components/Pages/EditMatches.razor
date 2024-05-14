@@ -5,8 +5,28 @@
 @using HockeyStatsTracker.Models
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+
+<script>
+    window.downloadFile = (filename, content) => {
+        const blob = new Blob([content], { type: 'application/octet-stream' });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+</script>
 
 <h1>Edit matches</h1>
+
+<button @onclick="DownloadData">Download Data</button>
+<br/>
 
 <select @oninput="LoadSeasons">
     <option value="">Select a league</option>
@@ -85,25 +105,23 @@ else
         matches = await Http.GetFromJsonAsync<IEnumerable<MatchPreviewFE>>($"api/Matches/season/{selectedSeasonId}");
     }
 
-//    TODO implement or remove
-//    private async Task ConfirmDelete(int matchId)
-//    {
-//        if (confirm("Are you sure you want to delete this match?"))
-//        {
-//            await DeleteMatch(matchId);
-//        }
-    //   }
-
     private async Task DeleteMatch(int matchId)
     {
         await Http.DeleteAsync($"api/Matches/{matchId}");
-        // Reload matches after deletion
         await LoadMatches(new ChangeEventArgs { Value = selectedSeasonId });
     }
 
     private void AddMatch()
     {
         NavigationManager.NavigateTo($"/add/match/{selectedSeasonId}");
+    }
+    
+    private async Task DownloadData()
+    {
+        var response = await Http.GetAsync("api/Export", HttpCompletionOption.ResponseHeadersRead);
+        var content = await response.Content.ReadAsStringAsync();
+        
+        await JSRuntime.InvokeVoidAsync("downloadFile", "data.json", content);
     }
 
 }
