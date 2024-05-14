@@ -3,6 +3,7 @@
 @attribute [StreamRendering(true)]
 @attribute [RenderModeServer]
 @using System.Text.Json
+@using DB.Models.Enums
 @using HockeyStatsTracker.Models
 @inject HttpClient Http
 
@@ -150,6 +151,40 @@ else
             <button @onclick="(() => DeletePenalty(penalty.Id))">Delete</button>
         </p>
     }
+    
+    <button @onclick="(() => AddHomePenalty())">Add Penalty</button>
+    
+    @if (showAddHomePenaltyForm)
+    {
+        <h3>Add Home Penalty</h3>
+        <div>
+            <label for="playerId">Player:</label>
+            <select id="playerId" @bind="newHomePenalty.PlayerId">
+                @foreach (var player in HomeTeamPlayers)
+                {
+                    <option value="@player.Id">@player.Name</option>
+                }
+            </select>
+        </div>
+        
+        <div>
+            <label for="penaltyType">Penalty Type:</label>
+            <select id="penaltyType" @bind="newHomePenalty.PenaltyTypeEnum">
+                <option value=""></option>
+                @foreach (PenaltyType penaltyType in Enum.GetValues(typeof(PenaltyType)))
+                {
+                    <option value="@penaltyType">@penaltyType</option>
+                }
+            </select>
+        </div>
+        
+        <div>
+            <label for="time">Time:</label>
+            <input id="time" type="text" @bind="newHomePenalty.TimePenalty" />
+        </div>
+
+        <button @onclick="(() => SubmitHomePenalty())">Submit</button>
+    }
 
     <h4>@matchDetail.AwayTeamName penalties</h4>
     foreach (var penalty in matchDetail.AwayPenalties)
@@ -158,6 +193,40 @@ else
             @penalty.PlayerName - @penalty.TimePenalty @penalty.PenaltyType @penalty.PenaltyMinutes:00
             <button @onclick="(() => DeletePenalty(penalty.Id))">Delete</button>
         </p>
+    }
+    
+    <button @onclick="(() => AddAwayPenalty())">Add Penalty</button>
+    
+    @if (showAddAwayPenaltyForm)
+    {
+        <h3>Add Away Penalty</h3>
+        <div>
+            <label for="playerId">Player:</label>
+            <select id="playerId" @bind="newAwayPenalty.PlayerId">
+                @foreach (var player in AwayTeamPlayers)
+                {
+                    <option value="@player.Id">@player.Name</option>
+                }
+            </select>
+        </div>
+        
+        <div>
+            <label for="penaltyType">Penalty Type:</label>
+            <select id="penaltyType" @bind="newAwayPenalty.PenaltyTypeEnum">
+                <option value="">None</option>
+                @foreach (PenaltyType penaltyType in Enum.GetValues(typeof(PenaltyType)))
+                {
+                    <option value="@penaltyType">@penaltyType</option>
+                }
+            </select>
+        </div>
+        
+        <div>
+            <label for="time">Time:</label>
+            <input id="time" type="text" @bind="newAwayPenalty.TimePenalty" />
+        </div>
+
+        <button @onclick="(() => SubmitAwayPenalty())">Submit</button>
     }
 }
 
@@ -172,18 +241,17 @@ else
     private GoalFE newAwayGoal = new GoalFE();
     private bool showAddHomeGoalForm = false;
     private bool showAddAwayGoalForm = false;
+    
+    private PenaltyFE newHomePenalty = new PenaltyFE();
+    private PenaltyFE newAwayPenalty = new PenaltyFE();
+    private bool showAddHomePenaltyForm = false;
+    private bool showAddAwayPenaltyForm = false;
 
     protected override async Task OnInitializedAsync()
     {
         matchDetail = await Http.GetFromJsonAsync<MatchFE>($"api/Matches/{MatchId}");
         HomeTeamPlayers = await Http.GetFromJsonAsync<IEnumerable<PlayerFE>>($"api/Players/team/{matchDetail.HomeTeamId}");
         AwayTeamPlayers = await Http.GetFromJsonAsync<IEnumerable<PlayerFE>>($"api/Players/team/{matchDetail.AwayTeamId}");
-    }
-
-    private async Task DeleteGoal(int goalId)
-    {
-        await Http.DeleteAsync($"api/Goals/{goalId}");
-        matchDetail = await Http.GetFromJsonAsync<MatchFE>($"api/Matches/{MatchId}");
     }
 
     private async Task AddHomeGoal()
@@ -214,6 +282,42 @@ else
         matchDetail = await Http.GetFromJsonAsync<MatchFE>($"api/Matches/{MatchId}");
         showAddAwayGoalForm = false;
         newAwayGoal = new GoalFE();
+    }
+    
+    private async Task DeleteGoal(int goalId)
+    {
+        await Http.DeleteAsync($"api/Goals/{goalId}");
+        matchDetail = await Http.GetFromJsonAsync<MatchFE>($"api/Matches/{MatchId}");
+    }
+    
+    private async Task AddHomePenalty()
+    {
+        showAddHomePenaltyForm = true;
+    }
+    
+    private async Task AddAwayPenalty()
+    {
+        showAddAwayPenaltyForm = true;
+    }
+    
+    private async Task SubmitHomePenalty()
+    {
+
+        await Http.PostAsJsonAsync($"api/Penalties/home/{MatchId}", newHomePenalty);
+        
+        matchDetail = await Http.GetFromJsonAsync<MatchFE>($"api/Matches/{MatchId}");
+        showAddHomePenaltyForm = false;
+        newHomePenalty = new PenaltyFE();
+    }
+    
+    private async Task SubmitAwayPenalty()
+    {
+
+        await Http.PostAsJsonAsync($"api/Penalties/away/{MatchId}", newAwayPenalty);
+        
+        matchDetail = await Http.GetFromJsonAsync<MatchFE>($"api/Matches/{MatchId}");
+        showAddAwayPenaltyForm = false;
+        newAwayPenalty = new PenaltyFE();
     }
 
     private async Task DeletePenalty(int penaltyId)
