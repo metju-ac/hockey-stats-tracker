@@ -1,4 +1,5 @@
 using DB;
+using DB.Models;
 using DB.Models.Enums;
 using HockeyStatsTracker.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -115,6 +116,7 @@ public class MatchesController : Controller
                 MatchResult.AwaySOWin => "SO",
                 _ => ""
             },
+            MatchResult = match.MatchResult,
             
             HomeGoals = match.Goals
                 .Where(g => g.IsHomeTeamGoal)
@@ -176,18 +178,22 @@ public class MatchesController : Controller
         return Ok(matchFE);
     }
     
-    [HttpDelete("{matchId:int}")]
-    public async Task<IActionResult> DeleteMatch(int matchId)
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> UpdateMatch(int id, MatchFE matchFE)
     {
-        var match = await _context.Matches.FindAsync(matchId);
+        var match = await _context.Matches.FindAsync(id);
         if (match == null)
         {
             return NotFound();
         }
 
-        _context.Matches.Remove(match);
+        match.Location = matchFE.Location;
+        match.Date = matchFE.Date;
+        match.MatchResult = matchFE.MatchResult;
+
+        _context.Entry(match).State = EntityState.Modified;
         await _context.SaveChangesAsync();
 
-        return NoContent();
+        return Ok();
     }
 }

@@ -2,7 +2,6 @@
 
 @attribute [StreamRendering(true)]
 @attribute [RenderModeServer]
-@using System.Text.Json
 @using DB.Models.Enums
 @using HockeyStatsTracker.Models
 @inject HttpClient Http
@@ -16,8 +15,28 @@
 else
 {
     <h3>@matchDetail.HomeTeamName @matchDetail.HomeGoalsCount:@matchDetail.AwayGoalsCount @matchDetail.Suffix @matchDetail.AwayTeamName </h3>
-    <p>Location: @matchDetail.Location</p>
-    <p>Date: @matchDetail.Date.ToShortDateString()</p>
+    
+    <div>
+        <label for="location">Location:</label>
+        <input id="location" type="text" @bind="matchDetail.Location" />
+    </div>
+
+    <div>
+        <label for="date">Date:</label>
+        <input id="date" type="date" @bind="matchDetail.Date" />
+    </div>
+
+    <div>
+        <label for="matchResult">Match Result:</label>
+        <select id="matchResult" @bind="matchDetail.MatchResult">
+            @foreach (MatchResult matchResult in Enum.GetValues(typeof(MatchResult)))
+            {
+                <option value="@matchResult">@matchResult</option>
+            }
+        </select>
+    </div>
+
+    <button @onclick="SaveChanges">Save Changes</button>
 
     <h4>@matchDetail.HomeTeamName goals</h4>
     foreach (var goal in matchDetail.HomeGoals)
@@ -252,6 +271,12 @@ else
         matchDetail = await Http.GetFromJsonAsync<MatchFE>($"api/Matches/{MatchId}");
         HomeTeamPlayers = await Http.GetFromJsonAsync<IEnumerable<PlayerFE>>($"api/Players/team/{matchDetail.HomeTeamId}");
         AwayTeamPlayers = await Http.GetFromJsonAsync<IEnumerable<PlayerFE>>($"api/Players/team/{matchDetail.AwayTeamId}");
+    }
+    
+    private async Task SaveChanges()
+    {
+        await Http.PutAsJsonAsync($"api/Matches/{matchDetail.Id}", matchDetail);
+        matchDetail = await Http.GetFromJsonAsync<MatchFE>($"api/Matches/{matchDetail.Id}");
     }
 
     private async Task AddHomeGoal()

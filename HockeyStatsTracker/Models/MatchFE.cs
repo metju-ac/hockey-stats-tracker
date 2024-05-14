@@ -1,3 +1,5 @@
+using DB.Models.Enums;
+
 namespace HockeyStatsTracker.Models;
 
 public class MatchFE
@@ -14,6 +16,7 @@ public class MatchFE
     public int HomeGoalsCount { get; set; }
     public int AwayGoalsCount { get; set; }
     public string Suffix { get; set; }
+    public MatchResult MatchResult { get; set; }
     
     public ICollection<GoalFE> HomeGoals { get; set; } = new List<GoalFE>();
     public ICollection<GoalFE> AwayGoals { get; set; } = new List<GoalFE>();
