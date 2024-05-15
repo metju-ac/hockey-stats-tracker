@@ -38,13 +38,11 @@
 
         if (response.IsSuccessStatusCode)
         {
-            Console.WriteLine("Login successful");
             _authService.adminLoggedIn = true;
             NavManager.NavigateTo("/");
         }
         else
         {
-            Console.WriteLine("Login failed");
             showLoginError = true;
             _loginModel = new LoginModel();
         }

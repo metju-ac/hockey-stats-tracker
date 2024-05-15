@@ -1,9 +1,13 @@
 @page "/edit/match/{MatchId:int}"
-
 @attribute [StreamRendering(true)]
 @attribute [RenderModeServer]
+
 @using DB.Models.Enums
 @using HockeyStatsTracker.Models
+@using HockeyStatsTracker.Services
+
+@inject AuthService _authService;
+@inject NavigationManager NavigationManager
 @inject HttpClient Http
 
 <h2>Edit Match Details</h2>
@@ -268,6 +272,11 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        if (!_authService.adminLoggedIn)
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+        
         matchDetail = await Http.GetFromJsonAsync<MatchFE>($"api/Matches/{MatchId}");
         HomeTeamPlayers = await Http.GetFromJsonAsync<IEnumerable<PlayerFE>>($"api/Players/team/{matchDetail.HomeTeamId}");
         AwayTeamPlayers = await Http.GetFromJsonAsync<IEnumerable<PlayerFE>>($"api/Players/team/{matchDetail.AwayTeamId}");

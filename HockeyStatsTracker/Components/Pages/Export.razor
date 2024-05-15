@@ -1,0 +1,50 @@
+@page "/export"
+@attribute [StreamRendering(true)]
+@attribute [RenderModeServer]
+
+@using HockeyStatsTracker.Services
+
+@inject HttpClient Http
+
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+@inject AuthService _authService;
+
+<script>
+    window.downloadFile = (filename, content) => {
+        const blob = new Blob([content], { type: 'application/octet-stream' });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+</script>
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!_authService.adminLoggedIn)
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+
+        await DownloadData();
+        
+        NavigationManager.NavigateTo("/");
+    }
+
+    private async Task DownloadData()
+    {
+        var response = await Http.GetAsync("api/Export", HttpCompletionOption.ResponseHeadersRead);
+        var content = await response.Content.ReadAsStringAsync();
+        
+        await JSRuntime.InvokeVoidAsync("downloadFile", "data.json", content);
+    }
+}

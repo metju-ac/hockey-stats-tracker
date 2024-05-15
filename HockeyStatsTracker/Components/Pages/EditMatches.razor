@@ -1,32 +1,15 @@
 @page "/edit/matches"
-
 @attribute [StreamRendering(true)]
 @attribute [RenderModeServer]
+
 @using HockeyStatsTracker.Models
+@using HockeyStatsTracker.Services
+
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
-@inject IJSRuntime JSRuntime
-
-<script>
-    window.downloadFile = (filename, content) => {
-        const blob = new Blob([content], { type: 'application/octet-stream' });
-        const url = URL.createObjectURL(blob);
-
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    }
-</script>
+@inject AuthService _authService;
 
 <h1>Edit matches</h1>
-
-<button @onclick="DownloadData">Download Data</button>
-<br/>
 
 <select @oninput="LoadSeasons">
     <option value="">Select a league</option>
@@ -80,6 +63,10 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        if (!_authService.adminLoggedIn)
+        {
+            NavigationManager.NavigateTo("/login");
+        }
         leagues = await Http.GetFromJsonAsync<IEnumerable<LeagueFE>>("api/Leagues");
     }
 
@@ -115,13 +102,4 @@ else
     {
         NavigationManager.NavigateTo($"/add/match/{selectedSeasonId}");
     }
-    
-    private async Task DownloadData()
-    {
-        var response = await Http.GetAsync("api/Export", HttpCompletionOption.ResponseHeadersRead);
-        var content = await response.Content.ReadAsStringAsync();
-        
-        await JSRuntime.InvokeVoidAsync("downloadFile", "data.json", content);
-    }
-
 }
