@@ -223,7 +223,6 @@ public class MatchesController : Controller
         _context.Matches.Add(match);
         await _context.SaveChangesAsync();
 
-        Console.WriteLine(match.Id);
         return await GetMatchById(match.Id);
     }
     

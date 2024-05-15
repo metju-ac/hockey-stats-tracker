@@ -16,7 +16,6 @@ builder.Services.AddControllers();
 
 builder.Services.AddSingleton<AuthService>();
 
-
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -28,7 +27,6 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
-app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
     .AddServerRenderMode();
@@ -38,7 +36,6 @@ using (var context = new DatabaseContext())
     context.Database.EnsureCreated();
     DatabaseSeeder.ResetDatabase(context);
 }
-
 
 app.MapControllers();
 

@@ -1,8 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using DB;
-using DB.Models;
-using DB.Models.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,7 +20,6 @@ public class ExportController : Controller
     [HttpGet]
     public async Task<IActionResult> ExportData()
     {
-        Console.WriteLine("Exporting data");
         var filePath = Path.GetTempFileName();
         await ExportDataAsync(filePath);
 

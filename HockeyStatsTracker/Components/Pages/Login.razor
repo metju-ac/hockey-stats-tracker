@@ -4,6 +4,7 @@
 
 @using DB.Models
 @using Services
+
 @inject HttpClient Http
 @inject AuthService _authService;
 @inject NavigationManager NavManager
@@ -29,11 +30,6 @@
 
     private async Task HandleValidSubmit()
     {
-        Console.WriteLine("Submitting login form");
-        Console.WriteLine(_loginModel.Username);
-
-        Console.WriteLine(_loginModel.Password);
-
         var response = await Http.PostAsJsonAsync("api/Auth/Login", _loginModel);
 
         if (response.IsSuccessStatusCode)

@@ -1,9 +1,10 @@
 @page "/add/match/{SeasonId:int}"
-
 @attribute [StreamRendering(true)]
 @attribute [RenderModeServer]
+
 @using DB.Models.Enums
 @using HockeyStatsTracker.Models
+
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 

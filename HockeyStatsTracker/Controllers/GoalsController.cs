@@ -1,9 +1,7 @@
 using DB;
 using DB.Models;
-using DB.Models.Enums;
 using HockeyStatsTracker.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace HockeyStatsTracker.Controllers;
 
