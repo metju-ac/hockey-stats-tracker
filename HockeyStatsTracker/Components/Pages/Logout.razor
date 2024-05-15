@@ -1,0 +1,15 @@
+@page "/logout"
+@attribute [StreamRendering(true)]
+@attribute [RenderModeServer]
+
+@using Services
+@inject AuthService _authService;
+@inject NavigationManager NavManager
+
+@code {
+    protected override void OnInitialized()
+    {
+        _authService.adminLoggedIn = false;
+        NavManager.NavigateTo("/");
+    }
+}

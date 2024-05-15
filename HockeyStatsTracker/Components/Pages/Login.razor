@@ -1,14 +1,12 @@
 @page "/login"
-@attribute [AllowAnonymous]
-@using System.ComponentModel.DataAnnotations
-@using System.Security.Cryptography
-@using System.Text
+@attribute [StreamRendering(true)]
+@attribute [RenderModeServer]
+
 @using DB.Models
-@using Microsoft.AspNetCore.Authorization
-@using Microsoft.AspNetCore.Components.Authorization
 @using Services
 @inject HttpClient Http
-@inject CustomAuthenticationStateProvider _authenticationStateProvider
+@inject AuthService _authService;
+@inject NavigationManager NavManager
 
 <EditForm Model="@_loginModel" OnValidSubmit="HandleValidSubmit" FormName="LoginForm">
     <DataAnnotationsValidator/>
@@ -41,7 +39,8 @@
         if (response.IsSuccessStatusCode)
         {
             Console.WriteLine("Login successful");
-            _authenticationStateProvider.FakedAdminSignIn();
+            _authService.adminLoggedIn = true;
+            NavManager.NavigateTo("/");
         }
         else
         {

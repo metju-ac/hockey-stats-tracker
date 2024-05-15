@@ -1,13 +1,23 @@
-﻿@inherits LayoutComponentBase
+﻿@using HockeyStatsTracker.Services
+@inherits LayoutComponentBase
+@inject AuthService _authService
+@inject NavigationManager NavManager
 
 <div class="page">
     <div class="sidebar">
-        <NavMenu />
+        <NavMenu/>
     </div>
 
     <main>
         <div class="top-row px-4">
-            <a href="login">Sing in</a>
+            @if (_authService.adminLoggedIn)
+            {
+            <a href="logout">Log out</a>
+            }
+            else
+            {
+                <a href="login">Login</a>
+            }
         </div>
 
         <article class="content px-4">

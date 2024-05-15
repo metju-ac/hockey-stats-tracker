@@ -1,13 +1,10 @@
 using DB;
 using DB.Utils;
 using HockeyStatsTracker.Components;
-using HockeyStatsTracker.Controllers;
-using Microsoft.AspNetCore.Components.Authorization;
-using Services;
+using HockeyStatsTracker.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddRazorComponents()
     .AddServerComponents();
 
@@ -15,12 +12,10 @@ builder.Services.AddDbContext<DatabaseContext>();
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5000") });
 
-builder.Services.AddScoped<CustomAuthenticationStateProvider>();
-builder.Services.AddScoped<AuthenticationStateProvider>(provider =>
-    provider.GetRequiredService<CustomAuthenticationStateProvider>());
-builder.Services.AddAuthorizationCore();
-
 builder.Services.AddControllers();
+
+builder.Services.AddSingleton<AuthService>();
+
 
 var app = builder.Build();
 
