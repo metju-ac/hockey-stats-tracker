@@ -226,4 +226,19 @@ public class MatchesController : Controller
         Console.WriteLine(match.Id);
         return await GetMatchById(match.Id);
     }
+    
+    [HttpDelete("{matchId:int}")]
+    public async Task<ActionResult> DeleteMatch(int matchId)
+    {
+        var match = await _context.Matches.FindAsync(matchId);
+        if (match == null)
+        {
+            return NotFound();
+        }
+
+        _context.Matches.Remove(match);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
 }
