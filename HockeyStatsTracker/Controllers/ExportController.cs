@@ -17,34 +17,37 @@ public class ExportController : Controller
         _context = context;
     }
     
-    [HttpGet]
-    public async Task<IActionResult> ExportData()
+    [HttpGet("season/{seasonId:int}")]
+    public async Task<IActionResult> ExportData(int seasonId)
     {
         var filePath = Path.GetTempFileName();
-        await ExportDataAsync(filePath);
+        await ExportDataAsyncBySeason(filePath, seasonId);
 
         var jsonData = await System.IO.File.ReadAllTextAsync(filePath);
         return Content(jsonData, "application/json");
         
     }
     
-    private async Task ExportDataAsync(string filePath)
+    private async Task ExportDataAsyncBySeason(string filePath, int seasonId)
     {
-        var matches = await _context.Matches.ToListAsync();
-        var teams = await _context.Teams.ToListAsync();
-        var players = await _context.Players.ToListAsync();
-        var leagues = await _context.Leagues.ToListAsync();
-        var seasons = await _context.Seasons.ToListAsync();
-        var goals = await _context.Goals.ToListAsync();
-        var penalties = await _context.Penalties.ToListAsync();
-
+        var matches = await _context.Matches
+            .Include(match => match.HomeTeam)
+            .Include(match => match.AwayTeam)
+            .Include(match => match.Goals)
+            .Include(match => match.Penalties)
+            .Where(match => match.SeasonId == seasonId)
+            .ToListAsync();
+        
+        var teams = matches.SelectMany(m => new[] { m.HomeTeam, m.AwayTeam }).Distinct().ToList();
+        var players = teams.SelectMany(t => t.Players).Distinct().ToList();  
+        var goals = matches.SelectMany(m => m.Goals).Distinct().ToList();
+        var penalties = matches.SelectMany(m => m.Penalties).Distinct().ToList();
+        
         var data = new
         {
             Matches = matches,
             Teams = teams,
             Players = players,
-            Leagues = leagues,
-            Seasons = seasons,
             Goals = goals,
             Penalties = penalties
         };
